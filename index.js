@@ -88,7 +88,20 @@ async function run() {
             const query = {};
             const users = await usersCollection.find(query).toArray();
             res.send(users);
-        })
+        });
+        app.get('/buyers', async (req, res) => {
+            const query = {role: 'buyer'};
+            const buyers = await usersCollection.find(query).toArray();
+            res.send(buyers);
+        });
+
+
+        app.get('/sellers', async (req, res) => {
+            
+            const query = {role: 'seller'};
+            const sellers = await usersCollection.find(query).toArray();
+            res.send(sellers);
+        });
 
         app.post('/users', async (req, res) => {
             const user = req.body;
