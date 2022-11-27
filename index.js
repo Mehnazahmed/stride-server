@@ -44,6 +44,7 @@ async function run() {
         const productCategories = client.db('resellingportal').collection('productCategories');
         const bookingsCollection = client.db('resellingportal').collection('bookings');
         const usersCollection = client.db('resellingportal').collection('users');
+        const addedproductscollection = client.db('resellingportal').collection('addedproducts');
 
         const verifyAdmin = async (req, res, next) => {
             console.log('inside verifyAdmin', req.decoded.email)
@@ -172,6 +173,12 @@ async function run() {
             
 
             const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        });
+
+        app.post('/addedproducts', verifyJWT, verifyAdmin, async (req, res) => {
+            const product = req.body;
+            const result = await addedproductscollection.insertOne(product);
             res.send(result);
         });
 
