@@ -176,7 +176,14 @@ async function run() {
             res.send(result);
         });
 
-        app.post('/addedproducts', verifyJWT, verifyAdmin, async (req, res) => {
+         app.get('/addedproducts', verifyJWT, verifyAdmin, async (req, res) => {
+            const query = {};
+            const newAddedProducts = await addedproductscollection.find(query).toArray();
+            res.send(newAddedProducts);
+        });
+
+
+        app.post('/addedproducts',verifyJWT, async (req, res) => {
             const product = req.body;
             const result = await addedproductscollection.insertOne(product);
             res.send(result);
