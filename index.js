@@ -58,17 +58,7 @@ async function run() {
             next();
         }
 
-        // const verifyBuyer = async (req, res, next) => {
-        //     console.log('inside verifyBuyer', req.decoded.email)
-        //     const decodedEmail = req.decoded.email;
-        //     const query = { email: decodedEmail };
-        //     const user = await usersCollection.findOne(query);
-
-        //     if (user?.role !== 'buyer') {
-        //         return res.status(403).send({ message: 'forbidden access' })
-        //     }
-        //     next();
-        // }
+    
        
         app.get('/products', async (req, res) => {
 
@@ -181,7 +171,7 @@ async function run() {
             res.send(bookings);
         });
 
-        app.get('/bookings/:id', async (req, res) => {
+        app.get('/bookings/:id',verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const booking = await bookingsCollection.findOne(query);
@@ -202,14 +192,14 @@ async function run() {
             res.send(result);
         });
 
-         app.get('/addedproducts', async (req, res) => {
+         app.get('/addedproducts',verifyJWT, async (req, res) => {
             const query = {};
             const newAddedProducts = await addedproductscollection.find(query).toArray();
             res.send(newAddedProducts);
         });
 
 
-        app.post('/addedproducts', async (req, res) => {
+        app.post('/addedproducts',verifyJWT, async (req, res) => {
             const product = req.body;
             const result = await addedproductscollection.insertOne(product);
             res.send(result);
