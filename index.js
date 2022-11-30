@@ -57,6 +57,18 @@ async function run() {
             }
             next();
         }
+
+        // const verifyBuyer = async (req, res, next) => {
+        //     console.log('inside verifyBuyer', req.decoded.email)
+        //     const decodedEmail = req.decoded.email;
+        //     const query = { email: decodedEmail };
+        //     const user = await usersCollection.findOne(query);
+
+        //     if (user?.role !== 'buyer') {
+        //         return res.status(403).send({ message: 'forbidden access' })
+        //     }
+        //     next();
+        // }
        
         app.get('/products', async (req, res) => {
 
@@ -127,6 +139,20 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
         });
+        
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' });
+        });
+
+        app.get('/users/buyer/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query);
+            res.send({ isBuyer: user?.role === 'buyer' });
+        });
 
         app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
 
@@ -176,14 +202,14 @@ async function run() {
             res.send(result);
         });
 
-         app.get('/addedproducts', verifyJWT, verifyAdmin, async (req, res) => {
+         app.get('/addedproducts', async (req, res) => {
             const query = {};
             const newAddedProducts = await addedproductscollection.find(query).toArray();
             res.send(newAddedProducts);
         });
 
 
-        app.post('/addedproducts',verifyJWT, async (req, res) => {
+        app.post('/addedproducts', async (req, res) => {
             const product = req.body;
             const result = await addedproductscollection.insertOne(product);
             res.send(result);
